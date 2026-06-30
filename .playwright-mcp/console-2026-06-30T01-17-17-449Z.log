@@ -1,0 +1,3 @@
+[      50ms] [VERBOSE] [DOM] Input elements should have autocomplete attributes (suggested: "current-password"): (More info: https://goo.gl/9p2vKq) %o @ http://127.0.0.1:8000/login/:0
+[    6731ms] TypeError: Cannot read properties of null (reading 'getContext')
+    at HTMLDocument.<anonymous> (http://127.0.0.1:8000/:290:78)

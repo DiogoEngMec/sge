@@ -1,0 +1,17 @@
+- generic [active] [ref=f1e1]:
+  - navigation [ref=f1e2]:
+    - link "Sistema de Gestão de Estoque (SGE)" [ref=f1e4] [cursor=pointer]:
+      - /url: /
+  - main [ref=f1e8]:
+    - generic [ref=f1e13]:
+      - heading "Login" [level=5] [ref=f1e14]
+      - generic [ref=f1e15]:
+        - generic [ref=f1e16]:
+          - generic [ref=f1e17]: Usuário
+          - textbox "Usuário" [ref=f1e18]
+        - generic [ref=f1e19]:
+          - generic [ref=f1e20]: Senha
+          - textbox "Senha" [ref=f1e21]
+        - button "Entrar" [ref=f1e23] [cursor=pointer]
+  - contentinfo [ref=f1e24]:
+    - generic [ref=f1e25]: © 2024 SGE
