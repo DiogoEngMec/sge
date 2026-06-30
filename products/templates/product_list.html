@@ -1,113 +1,120 @@
 {% extends 'base.html' %}
-
-{% block title %}
-  SGE - Produtos
-{% endblock %}
+{% block title %}SGE - Produtos{% endblock %}
 
 {% block content %}
+
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-xl font-bold text-white">Produtos</h1>
+      <p class="text-sm text-slate-400 mt-0.5">Catálogo de produtos do estoque</p>
+    </div>
+    {% if perms.products.add_product %}
+    <a href="{% url 'product_create' %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-medium hover:from-indigo-700 hover:to-violet-700 shadow-lg shadow-indigo-500/20 transition-all duration-200">
+      <i class="bi bi-plus text-lg leading-none"></i>
+      Novo Produto
+    </a>
+    {% endif %}
+  </div>
 
   {% if perms.products.view_product and perms.inflows.view_inflow %}
     {% include 'components/_product_metrics.html' %}
   {% endif %}
 
-  <div class="mb-4"></div>
-
-  <div class="row mb-3">
-    <div class="col-md-6">
-      <form method="get" action="{% url 'product_list' %}">
-        <div class="input-group">
-          <input type="text" class="form-control" name="title" placeholder="Título" value="{{ request.GET.title }}">
-          <input type="text" class="form-control" name="serie_number" placeholder="Número de Série" value="{{ request.GET.serie_number }}">
-          <button type="submit" class="btn btn-primary">
-            <i class="bi bi-search"></i>
-          </button>
-        </div>
-      </form>
-    </div>
-    {% if perms.products.add_product %}
-      <div class="col-md-6">
-        <a href="{% url 'product_create' %}" class="btn btn-success float-end">
-          <i class="bi bi-plus"></i> Novo Produto
-        </a>
+  <!-- Filters -->
+  <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 p-4 mb-4 space-y-3">
+    <form method="get" action="{% url 'product_list' %}" class="flex flex-wrap gap-3">
+      <div class="relative flex-1 min-w-[160px]">
+        <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+        <input type="text" name="title" placeholder="Título..." value="{{ request.GET.title }}"
+          class="w-full pl-9 pr-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition">
       </div>
-    {% endif %}
+      <div class="relative flex-1 min-w-[140px]">
+        <input type="text" name="serie_number" placeholder="Nº de Série..." value="{{ request.GET.serie_number }}"
+          class="w-full px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition">
+      </div>
+      <select name="category" class="flex-1 min-w-[140px] px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+        <option value="">Todas as Categorias</option>
+        {% for category in categories %}
+        <option value="{{ category.id }}" {% if request.GET.category == category.id|stringformat:"s" %}selected{% endif %}>{{ category.name }}</option>
+        {% endfor %}
+      </select>
+      <select name="brand" class="flex-1 min-w-[130px] px-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition">
+        <option value="">Todas as Marcas</option>
+        {% for brand in brands %}
+        <option value="{{ brand.id }}" {% if request.GET.brand == brand.id|stringformat:"s" %}selected{% endif %}>{{ brand.name }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors">
+        <i class="bi bi-funnel text-sm mr-1"></i>Filtrar
+      </button>
+    </form>
   </div>
 
-  <div class="row mb-3">
-    <div class="col-md-6">
-      <form method="get" action="{% url 'product_list' %}">
-        <div class="input-group">
-          <select class="form-select" name="category">
-            <option value="" {% if not request.GET.category %} selected {% endif %}>Todas as Categorias</option>
-            {% for category in categories %}
-              <option value="{{ category.id }}" {% if request.GET.category == category.id %} selected {% endif %}>{{ category.name }}</option>
-            {% endfor %}
-          </select>
-          <select class="form-select" name="brand">
-            <option value="" {% if not request.GET.brand %} selected {% endif %}>Todas as Marcas</option>
-            {% for brand in brands %}
-              <option value="{{ brand.id }}" {% if request.GET.brand == brand.id %} selected {% endif %}>{{ brand.name }}</option>
-            {% endfor %}
-          </select>
-          <button type="submit" class="btn btn-primary">
-            <i class="bi bi-filter"></i> Filtrar
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-
-  <div class="table-responsive">
-    <table class="table table-striped table-bordered">
-      <thead class="thead-dark">
-        <tr>
-          <th>ID</th>
-          <th>Título</th>
-          <th>Categoria</th>
-          <th>Marca</th>
-          <th>Preço de Custo</th>
-          <th>Preço de Venda</th>
-          <th>Número de Série</th>
-          <th>Quantidade</th>
-          <th>Ações</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for product in products %}
-          <tr>
-            <td>
-                <a href="{% url 'product_detail' product.id %}" class="text-primary fw-semibold">
-                    {{ product.id }}
-                </a>
+  <!-- Table -->
+  <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-700/50">
+            <th class="text-left px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">ID</th>
+            <th class="text-left px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">Título</th>
+            <th class="text-left px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">Categoria</th>
+            <th class="text-left px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">Marca</th>
+            <th class="text-right px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">P. Custo</th>
+            <th class="text-right px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">P. Venda</th>
+            <th class="text-left px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">Nº Série</th>
+            <th class="text-center px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">Qtd</th>
+            <th class="text-right px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">Ações</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-700/30">
+          {% for product in products %}
+          <tr class="hover:bg-slate-700/20 transition-colors">
+            <td class="px-5 py-3.5">
+              <a href="{% url 'product_detail' product.id %}" class="text-indigo-400 hover:text-indigo-300 font-mono text-xs font-semibold">#{{ product.id }}</a>
             </td>
-            <td>{{ product.title }}</td>
-            <td>{{ product.category }}</td>
-            <td>{{ product.brand }}</td>
-            <td>R$ {{ product.cost_price }}</td>
-            <td>R$ {{ product.selling_price }}</td>
-            <td>{{ product.serie_number }}</td>
-            <td>{{ product.quantity }}</td>
-            <td>
-              <a href="{% url 'product_detail' product.id %}" class="btn btn-info btn-sm">
-                <i class="bi bi-eye"></i>
-              </a>
-
-              {% if perms.products.change_product %}
-                <a href="{% url 'product_update' product.id %}" class="btn btn-warning btn-sm">
-                  <i class="bi bi-pencil"></i>
+            <td class="px-5 py-3.5 text-white font-medium">{{ product.title }}</td>
+            <td class="px-5 py-3.5">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-700/50 text-slate-300 text-xs">{{ product.category }}</span>
+            </td>
+            <td class="px-5 py-3.5">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-slate-700/50 text-slate-300 text-xs">{{ product.brand }}</span>
+            </td>
+            <td class="px-5 py-3.5 text-right text-slate-300 font-mono text-xs">R$ {{ product.cost_price }}</td>
+            <td class="px-5 py-3.5 text-right text-emerald-400 font-mono text-xs font-semibold">R$ {{ product.selling_price }}</td>
+            <td class="px-5 py-3.5 text-slate-400 font-mono text-xs">{{ product.serie_number }}</td>
+            <td class="px-5 py-3.5 text-center">
+              <span class="inline-flex items-center justify-center w-8 h-6 rounded bg-indigo-500/20 text-indigo-400 text-xs font-bold">{{ product.quantity }}</span>
+            </td>
+            <td class="px-5 py-3.5">
+              <div class="flex items-center justify-end gap-1">
+                <a href="{% url 'product_detail' product.id %}" title="Detalhes" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 transition-colors">
+                  <i class="bi bi-eye text-sm"></i>
                 </a>
-              {% endif %}
-
-              {% if perms.products.delete_product %}
-                <a href="{% url 'product_delete' product.id %}" class="btn btn-danger btn-sm btn-delete">
-                  <i class="bi bi-trash"></i>
+                {% if perms.products.change_product %}
+                <a href="{% url 'product_update' product.id %}" title="Editar" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-amber-400 hover:bg-amber-500/10 transition-colors">
+                  <i class="bi bi-pencil text-sm"></i>
                 </a>
-              {% endif %}
+                {% endif %}
+                {% if perms.products.delete_product %}
+                <a href="{% url 'product_delete' product.id %}" title="Excluir" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-colors">
+                  <i class="bi bi-trash text-sm"></i>
+                </a>
+                {% endif %}
+              </div>
             </td>
           </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+          {% empty %}
+          <tr>
+            <td colspan="9" class="px-5 py-12 text-center">
+              <i class="bi bi-box-seam text-3xl text-slate-600 block mb-2"></i>
+              <p class="text-slate-500 text-sm">Nenhum produto encontrado</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
 
   {% include 'components/_pagination.html' %}
