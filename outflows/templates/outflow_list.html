@@ -1,72 +1,84 @@
 {% extends 'base.html' %}
-
-{% block title %}
-SGE - Saídas
-{% endblock %}
+{% block title %}SGE - Saídas{% endblock %}
 
 {% block content %}
 
-{% if perms.outflows.view_outflow %}
-{% include 'components/_sales_metrics.html' %}
-{% endif %}
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-xl font-bold text-white">Saídas</h1>
+      <p class="text-sm text-slate-400 mt-0.5">Registros de saída de produtos do estoque</p>
+    </div>
+    {% if perms.outflows.add_outflow %}
+    <a href="{% url 'outflow_create' %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-violet-600 text-white text-sm font-medium hover:from-indigo-700 hover:to-violet-700 shadow-lg shadow-indigo-500/20 transition-all duration-200">
+      <i class="bi bi-plus text-lg leading-none"></i>
+      Nova Saída
+    </a>
+    {% endif %}
+  </div>
 
-<div class="mb-4"></div>
+  {% if perms.outflows.view_outflow %}
+    {% include 'components/_sales_metrics.html' %}
+  {% endif %}
 
-<div class="row mb-3">
-  <div class="col-md-6">
-    <form method="get" action="{% url 'outflow_list' %}">
-      <div class="input-group">
-        <input type="text" class="form-control" name="product" placeholder="Produto" value="{{ request.GET.product }}">
-        <button type="submit" class="btn btn-primary">
-          <i class="bi bi-search"></i>
-        </button>
+  <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 p-4 mb-4">
+    <form method="get" action="{% url 'outflow_list' %}" class="flex gap-3">
+      <div class="relative flex-1 max-w-sm">
+        <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm"></i>
+        <input type="text" name="product" placeholder="Buscar por produto..." value="{{ request.GET.product }}"
+          class="w-full pl-9 pr-3 py-2 bg-slate-700/50 border border-slate-600 rounded-lg text-sm text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition">
       </div>
+      <button type="submit" class="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium transition-colors">
+        Buscar
+      </button>
     </form>
   </div>
-  {% if perms.outflows.add_outflow %}
-  <div class="col-md-6">
-    <a href="{% url 'outflow_create' %}" class="btn btn-success float-end">
-      <i class="bi bi-plus"></i> Nova Saída
-    </a>
+
+  <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="border-b border-slate-700/50">
+            <th class="text-left px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">ID</th>
+            <th class="text-left px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">Produto</th>
+            <th class="text-left px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">Fornecedor</th>
+            <th class="text-center px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">Quantidade</th>
+            <th class="text-left px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">Data de Saída</th>
+            <th class="text-right px-5 py-3.5 text-xs font-semibold text-slate-400 uppercase tracking-wider">Ações</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-700/30">
+          {% for outflow in outflows %}
+          <tr class="hover:bg-slate-700/20 transition-colors">
+            <td class="px-5 py-3.5">
+              <a href="{% url 'outflow_detail' outflow.id %}" class="text-indigo-400 hover:text-indigo-300 font-mono text-xs font-semibold">#{{ outflow.id }}</a>
+            </td>
+            <td class="px-5 py-3.5 text-white font-medium">{{ outflow.product }}</td>
+            <td class="px-5 py-3.5 text-slate-300">{{ outflow.supplier }}</td>
+            <td class="px-5 py-3.5 text-center">
+              <span class="inline-flex items-center justify-center px-2.5 py-0.5 rounded-lg bg-rose-500/20 text-rose-400 text-xs font-bold">-{{ outflow.quantity }}</span>
+            </td>
+            <td class="px-5 py-3.5 text-slate-400 text-xs">{{ outflow.created_at }}</td>
+            <td class="px-5 py-3.5">
+              <div class="flex items-center justify-end gap-1">
+                <a href="{% url 'outflow_detail' outflow.id %}" title="Detalhes" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-indigo-400 hover:bg-indigo-500/10 transition-colors">
+                  <i class="bi bi-eye text-sm"></i>
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6" class="px-5 py-12 text-center">
+              <i class="bi bi-arrow-up-right-square text-3xl text-slate-600 block mb-2"></i>
+              <p class="text-slate-500 text-sm">Nenhuma saída encontrada</p>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
-  {% endif %}
-</div>
 
-<div class="table-responsive">
-  <table class="table table-striped table-bordered">
-    <thead class="thead-dark">
-      <tr>
-        <th>ID</th>
-        <th>Produto</th>
-        <th>Fornecedor</th>
-        <th>Quantidade</th>
-        <th>Data de entrada</th>
-        <th>Ações</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for outflow in outflows %}
-      <tr>
-        <td>
-          <a href="{% url 'outflow_detail' outflow.id %}" class="text-primary fw-semibold">
-            {{ outflow.id }}
-          </a>
-        </td>
-        <td>{{ outflow.product }}</td>
-        <td>{{ outflow.supplier }}</td>
-        <td>{{ outflow.quantity }}</td>
-        <td>{{ outflow.created_at }}</td>
-        <td>
-          <a href="{% url 'outflow_detail' outflow.id %}" class="btn btn-info btn-sm">
-            <i class="bi bi-eye"></i>
-          </a>
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
-</div>
-
-{% include 'components/_pagination.html' %}
+  {% include 'components/_pagination.html' %}
 
 {% endblock %}

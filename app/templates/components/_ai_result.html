@@ -1,15 +1,18 @@
-<div class="accordion" id="accordionExample">
-  <div class="accordion-item">
-    <h2 class="accordion-header">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo"
-        aria-expanded="false" aria-controls="collapseTwo">
-        SGE Agent
-      </button>
-    </h2>
-    <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
-      <div class="accordion-body">
-        {{ ai_result|linebreaks }}
+<div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 mb-6 overflow-hidden">
+  <button
+    onclick="this.parentElement.querySelector('.ai-body').classList.toggle('hidden'); this.querySelector('.ai-chevron').classList.toggle('rotate-180')"
+    class="w-full flex items-center justify-between px-5 py-4 text-left hover:bg-slate-700/30 transition-colors"
+  >
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-indigo-600 to-violet-600 flex items-center justify-center">
+        <i class="bi bi-stars text-sm text-white"></i>
       </div>
+      <span class="text-sm font-semibold text-white">SGE Agent</span>
+      <span class="text-xs text-slate-400">IA de análise de estoque</span>
     </div>
+    <i class="bi bi-chevron-down text-slate-400 transition-transform duration-200 ai-chevron"></i>
+  </button>
+  <div class="ai-body hidden border-t border-slate-700/50 px-5 py-4 text-sm text-slate-300 leading-relaxed">
+    {{ ai_result|linebreaks }}
   </div>
 </div>

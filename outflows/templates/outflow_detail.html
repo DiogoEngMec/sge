@@ -1,18 +1,54 @@
 {% extends 'base.html' %}
+{% block title %}SGE - Saída #{{ object.id }}{% endblock %}
 
 {% block content %}
-  <div class="container mt-4">
-    <h3 class="display-4">Detalhes da Saída</h3>
 
-    <div class="card">
-      <div class="card-body">
-        <h3 class="card-title">{{ object.product }}</h3>
-        <p class="card-text">Fornecedor: <strong>{{ object.supplier }}</strong></p>
-        <p class="card-text">Quantidade: <strong>{{ object.quantity }}</strong></p>
-        <p class="card-text">{{ object.description }}</p>
+  <div class="mb-6 flex items-center gap-3">
+    <a href="{% url 'outflow_list' %}" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-slate-700/50 transition-colors">
+      <i class="bi bi-arrow-left text-sm"></i>
+    </a>
+    <div>
+      <h1 class="text-xl font-bold text-white">Detalhes da Saída</h1>
+      <p class="text-sm text-slate-400 mt-0.5">Registro #{{ object.id }}</p>
+    </div>
+  </div>
+
+  <div class="max-w-xl">
+    <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 overflow-hidden">
+      <div class="px-6 py-5 border-b border-slate-700/50 flex items-center gap-4">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-rose-600/30 to-indigo-600/30 border border-rose-500/20 flex items-center justify-center">
+          <i class="bi bi-arrow-up-right-square text-xl text-rose-400"></i>
+        </div>
+        <div>
+          <h2 class="text-lg font-bold text-white">{{ object.product }}</h2>
+          <span class="inline-flex items-center px-2 py-0.5 rounded-md bg-rose-500/20 text-rose-400 text-xs font-semibold mt-1">
+            -{{ object.quantity }} unidades
+          </span>
+        </div>
+      </div>
+      <div class="divide-y divide-slate-700/30">
+        <div class="px-6 py-3.5 flex items-center justify-between">
+          <span class="text-sm text-slate-400">Fornecedor</span>
+          <span class="text-sm text-white font-medium">{{ object.supplier }}</span>
+        </div>
+        <div class="px-6 py-3.5 flex items-center justify-between">
+          <span class="text-sm text-slate-400">Quantidade</span>
+          <span class="text-sm text-rose-400 font-bold">{{ object.quantity }}</span>
+        </div>
+        {% if object.description %}
+        <div class="px-6 py-3.5 flex items-start justify-between gap-4">
+          <span class="text-sm text-slate-400 flex-shrink-0">Observações</span>
+          <span class="text-sm text-white text-right">{{ object.description }}</span>
+        </div>
+        {% endif %}
       </div>
     </div>
 
-    <a href="{% url 'outflow_list' %}" class="btn btn-secondary mt-3">Voltar para a Lista de Saídas</a>
+    <div class="flex gap-3 mt-4">
+      <a href="{% url 'outflow_list' %}" class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-700/50 hover:bg-slate-700 text-slate-300 text-sm font-medium transition-colors border border-slate-600">
+        <i class="bi bi-arrow-left text-sm"></i> Voltar
+      </a>
+    </div>
   </div>
+
 {% endblock %}

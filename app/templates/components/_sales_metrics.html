@@ -1,38 +1,43 @@
-<div class="card mt-4">
-  <div class="card-body">
-    <div class="row">
-      <div class="col-md-3">
-        <div class="card bg-primary">
-          <div class="card-body">
-            <h5 class="card-title">Quantidade de vendas</h5>
-            <p class="card-text text-white font-weight-bold display-6">{{ sales_metrics.total_sales }}</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card bg-danger">
-          <div class="card-body">
-            <h5 class="card-title">Produtos vendidos</h5>
-            <p class="card-text text-white font-weight-bold display-6">{{ sales_metrics.total_products_sold }}</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card bg-success">
-          <div class="card-body">
-            <h5 class="card-title">Valor das vendas</h5>
-            <p class="card-text text-white font-weight-bold display-6">R$ {{ sales_metrics.total_sales_value }}</p>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-3">
-        <div class="card bg-warning">
-          <div class="card-body">
-            <h5 class="card-title">Lucro das vendas</h5>
-            <p class="card-text text-white font-weight-bold display-6">R$ {{ sales_metrics.total_sales_profit }}</p>
-          </div>
-        </div>
-      </div>
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+
+  <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center flex-shrink-0">
+      <i class="bi bi-cart-check text-xl text-indigo-400"></i>
+    </div>
+    <div>
+      <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">Qtd. Vendas</p>
+      <p class="text-2xl font-bold text-white mt-0.5">{{ sales_metrics.total_sales }}</p>
     </div>
   </div>
+
+  <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-rose-500/20 flex items-center justify-center flex-shrink-0">
+      <i class="bi bi-bag-check text-xl text-rose-400"></i>
+    </div>
+    <div>
+      <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">Produtos Vendidos</p>
+      <p class="text-2xl font-bold text-white mt-0.5">{{ sales_metrics.total_products_sold }}</p>
+    </div>
+  </div>
+
+  <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
+      <i class="bi bi-cash-stack text-xl text-emerald-400"></i>
+    </div>
+    <div>
+      <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">Valor das Vendas</p>
+      <p class="text-2xl font-bold text-white mt-0.5">R$&nbsp;{{ sales_metrics.total_sales_value }}</p>
+    </div>
+  </div>
+
+  <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl border border-slate-700/50 p-5 flex items-center gap-4">
+    <div class="w-12 h-12 rounded-xl bg-violet-500/20 flex items-center justify-center flex-shrink-0">
+      <i class="bi bi-trending-up text-xl text-violet-400"></i>
+    </div>
+    <div>
+      <p class="text-xs font-medium text-slate-400 uppercase tracking-wide">Lucro das Vendas</p>
+      <p class="text-2xl font-bold text-white mt-0.5">R$&nbsp;{{ sales_metrics.total_sales_profit }}</p>
+    </div>
+  </div>
+
 </div>
